@@ -6,7 +6,7 @@ io.on('connection', function(client){
     client.on('create', function (room) {
         console.log('Join the room');
         client.join(room);
-        client.in(room).emit('event', 'new user');
+        client.in(room).emit('event', room);
     });
     client.on('disconnect', function(){
         console.log("Disconnected....");

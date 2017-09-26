@@ -1,33 +1,44 @@
 <html>
 <head>
-    <title>Node.js IL Chat</title>
+    <title>User Session </title>
     <script type="text/javascript" src="node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="http://wzrd.in/standalone/uuid%2Fv1@latest"></script>
     <script>
         var socket = io('http://localhost:3000');
+        var uniqueID = uuidv1(); // To generate unique IDs.
+        var clients = ['client1', 'clinet2', 'client3', 'client4', 'client5'];
+        // Just to select randpom number for demo purpose.
+        // This should be ideally replaced with 'selecting different clients functionlaity'
+        var randomNumber = Math.floor(Math.random() * (5) + 0);
+        var room = {
+            name: clients[randomNumber],
+            sessionID : uniqueID
+        };
         socket.on('connect', function(){
-            socket.emit('create', 'room1');
+            socket.emit('create', room);
         });
 
-        socket.on('event', function (data) {
-            console.log("Data from server....", data);
+        socket.on('event', function (eventRoom) {
+            console.log("Data from server....", eventRoom);
+            if( eventRoom.name === room.name) {
+                // If any other user enters the same client then close this connection or redirects the user.
+                socket.disconnect();
+                document.querySelector('.displayData').innerHTML = '<p> You are disconnected as some other user enterted the room. The other user session ID is '+room.sessionID;
+            }
         });
     </script>
 
     <style>
         body {
-            background-color:#000000;
-            color: green;
+            background-color:aqua;
+            color: cadetblue;
         }
     </style>
 
 </head>
 <body>
-<h2 class="white">Post your messages</h3>
-    <table>
-        <tr><td class="white">Your Message:</td><td><input id="message" type="text" size="50"></td></tr>
-    </table>
-    <h2 class="white">Messages</h3>
-        <div id="messages">
-        </div>
+  <div class="displayData">
+      <p>You are currently connected...</p>
+  </div>
 </body>
 </html>
