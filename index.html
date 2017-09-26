@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>Node.js IL Chat</title>
+    <script type="text/javascript" src="node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+        socket.on('connect', function(){
+            socket.emit('create', 'room1');
+        });
+
+        socket.on('event', function (data) {
+            console.log("Data from server....", data);
+        });
+    </script>
+
+    <style>
+        body {
+            background-color:#000000;
+            color: green;
+        }
+    </style>
+
+</head>
+<body>
+<h2 class="white">Post your messages</h3>
+    <table>
+        <tr><td class="white">Your Message:</td><td><input id="message" type="text" size="50"></td></tr>
+    </table>
+    <h2 class="white">Messages</h3>
+        <div id="messages">
+        </div>
+</body>
+</html>
