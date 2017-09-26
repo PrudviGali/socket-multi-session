@@ -5,8 +5,8 @@ io.on('connection', function(client){
     console.log('connection');
     client.on('create', function (room) {
         console.log('Join the room');
-        client.join(room);
-        client.in(room).emit('event', room);
+        client.join(room.name);
+        client.in(room.name).emit('event', room);
     });
     client.on('disconnect', function(){
         console.log("Disconnected....");
