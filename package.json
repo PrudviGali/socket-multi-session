@@ -18,7 +18,8 @@
     "url": "https://github.com/PrudviGali/socket-multi-session/issues"
   },
   "dependencies": {
-    "express": "*",
+    "angular": "^1.6.6",
+    "express": "^4.16.1",
     "lite-server": "^2.3.0",
     "socket.io": "*",
     "socket.io-client": "*"
