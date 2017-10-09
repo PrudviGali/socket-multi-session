@@ -14,38 +14,69 @@
 
 </head>
 <body ng-app="demo">
-  <div class="displayData" ng-controller="DemoCtrl">
-      <p>You are currently connected...</p>
+  <div class="displayData" ng-controller="DemoCtrlOne">
+      <p>You are currently connected from controller one...</p>
+  </div>
+  <div class="displayData" ng-controller="DemoCtrlTwo">
+      <p>You are currently connected from controller two...</p>
   </div>
   <script>
 
       var app = angular.module('demo', [])
       // We can use controller, service or factory based on the need.
-          .controller('DemoCtrl', function(){
+          .controller('DemoCtrlOne', function(socketFactory){
               var vm = this;
-              var socket = io('http://localhost:3000');
-              var uniqueID = uuidv1(); // To generate unique IDs.
-              var clients = ['client1', 'clinet2', 'client3', 'client4', 'client5'];
-              // Just to select randpom number for demo purpose.
-              // This should be ideally replaced with 'selecting different clients functionlaity'
-              var randomNumber = Math.floor(Math.random() * (5) + 0);
-              var room = {
-                  name: clients[randomNumber],
-                  sessionID : uniqueID
-              };
-              socket.on('connect', function(){
-                  socket.emit('create', room);
-              });
-
+              var socket = socketFactory.getSocket();
               socket.on('event', function (eventRoom) {
-                  console.log("Data from server....", eventRoom);
-                  if( eventRoom.name === room.name) {
+                  console.log("Data from server....", eventRoom, socketFactory.room.name);
+                  if( eventRoom.name === socketFactory.room.name) {
                       // If any other user enters the same client then close this connection or redirects the user.
                       socket.disconnect();
-                      document.querySelector('.displayData').innerHTML = '<p> You are disconnected as some other user enterted the room. The other user session ID is '+room.sessionID;
+                      document.querySelector('.displayData').innerHTML = '<p>DemoCtrlOne... You are disconnected as some other user enterted the room. The other user session ID is '+socketFactory.room.sessionID;
                   }
               });
+
           });
+
+      app.factory('socketFactory', function() {
+
+          // factory returns an object
+          // you can run some code before
+console.log('Called....');
+          var socket = io('http://localhost:3000');
+          var uniqueID = uuidv1(); // To generate unique IDs.
+          var clients = ['client1', 'clinet2', 'client3', 'client4', 'client5'];
+          // Just to select randpom number for demo purpose.
+          // This should be ideally replaced with 'selecting different clients functionlaity'
+          var randomNumber = Math.floor(Math.random() * (5) + 0);
+          var room = {
+              name: clients[randomNumber],
+              sessionID : uniqueID
+          };
+          socket.on('connect', function(){
+              socket.emit('create', room);
+          });
+
+          return {
+              getSocket : function() {
+                  return socket;
+              },
+              room : room,
+          }
+      });
+
+      app.controller('DemoCtrlTwo', function(socketFactory){
+          var vm = this;
+          var socket = socketFactory.getSocket();
+          socket.on('event', function (eventRoom) {
+              console.log("Data from server....", eventRoom, socketFactory.room.name);
+              if( eventRoom.name === socketFactory.room.name) {
+                  // If any other user enters the same client then close this connection or redirects the user.
+                  socket.disconnect();
+                  document.querySelector('.displayData').innerHTML = '<p>DemoCtrlTwo.... You are disconnected as some other user enterted the room. The other user session ID is '+socketFactory.room.sessionID;
+              }
+          });
+      });
   </script>
 </body>
 </html>
