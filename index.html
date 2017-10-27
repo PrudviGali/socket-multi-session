@@ -10,74 +10,47 @@
             background-color:aqua;
             color: cadetblue;
         }
+        .loginClass{
+            background: #d1effe;
+            height: 50px;
+            width:500px;
+            color:#9c0000;
+        }
+        .controllerOne {
+            background: #d1effe;
+            height: 100px;
+            width:500px;
+            color:#9c0000;
+        }
+        .controllerTwo {
+            background: #deddc2;
+            height: 100px;
+            width:500px;
+            color:#9c0000;
+        }
     </style>
 
 </head>
-<body ng-app="demo">
-  <div class="displayData" ng-controller="DemoCtrlOne">
-      <p>You are currently connected from controller one...</p>
+<body ng-app="demo" >
+
+    <div class="loginClass" ng-controller="loginController">
+      <p>This is sample controller. Socket connection made from this controller through socket service.</p>
+    </div>
+  <br>
+
+  <div class="controllerOne" ng-controller="DemoCtrlOne">
+      <h3>In DemoCtrlOne.....</h3>
+      <p>....Connected using socket from loginController.</p>
+      <button type="button" ng-click="disConnectSocketInContOne()" >Disconnect Socket from controller One</button>
   </div>
-  <div class="displayData" ng-controller="DemoCtrlTwo">
-      <p>You are currently connected from controller two...</p>
+  <br>
+  <div class="controllerTwo" ng-controller="DemoCtrlTwo">
+      <h3>In DemoCtrlTwo.....</h3>
+      <p>......Connected using socket from loginController.</p>
+      <button type="button" ng-click="disConnectSocketInConTwo()" >Disconnect Socket from controller Two</button>
   </div>
-  <script>
-
-      var app = angular.module('demo', [])
-      // We can use controller, service or factory based on the need.
-          .controller('DemoCtrlOne', function(socketFactory){
-              var vm = this;
-              var socket = socketFactory.getSocket();
-              socket.on('event', function (eventRoom) {
-                  console.log("Data from server....", eventRoom, socketFactory.room.name);
-                  if( eventRoom.name === socketFactory.room.name) {
-                      // If any other user enters the same client then close this connection or redirects the user.
-                      socket.disconnect();
-                      document.querySelector('.displayData').innerHTML = '<p>DemoCtrlOne... You are disconnected as some other user enterted the room. The other user session ID is '+socketFactory.room.sessionID;
-                  }
-              });
-
-          });
-
-      app.factory('socketFactory', function() {
-
-          // factory returns an object
-          // you can run some code before
-console.log('Called....');
-          var socket = io('http://localhost:3000');
-          var uniqueID = uuidv1(); // To generate unique IDs.
-          var clients = ['client1', 'clinet2', 'client3', 'client4', 'client5'];
-          // Just to select randpom number for demo purpose.
-          // This should be ideally replaced with 'selecting different clients functionlaity'
-          var randomNumber = Math.floor(Math.random() * (5) + 0);
-          var room = {
-              name: clients[randomNumber],
-              sessionID : uniqueID
-          };
-          socket.on('connect', function(){
-              socket.emit('create', room);
-          });
-
-          return {
-              getSocket : function() {
-                  return socket;
-              },
-              room : room,
-          }
-      });
-
-      app.controller('DemoCtrlTwo', function(socketFactory){
-          var vm = this;
-          var socket = socketFactory.getSocket();
-          socket.on('event', function (eventRoom) {
-              console.log("Data from server....", eventRoom, socketFactory.room.name);
-              if( eventRoom.name === socketFactory.room.name) {
-                  // If any other user enters the same client then close this connection or redirects the user.
-                  socket.disconnect();
-                  document.querySelector('.displayData').innerHTML = '<p>DemoCtrlTwo.... You are disconnected as some other user enterted the room. The other user session ID is '+socketFactory.room.sessionID;
-              }
-          });
-      });
-  </script>
+  <script src="app.js"></script>
+  <script src="service.js"></script>
 </body>
 </html>
 
