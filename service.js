@@ -19,7 +19,7 @@ app.service('socketFactory', function() {
                 socket.emit('create', room);
             });
         }
-    }
+    };
     return {
         getSocket : function() {
             return socket;

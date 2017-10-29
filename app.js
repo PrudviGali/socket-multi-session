@@ -13,15 +13,15 @@ app.controller('DemoCtrlOne', function($scope, socketFactory){
             console.log("Data from server....", eventRoom, socketFactory.room.name);
             if (eventRoom.name === socketFactory.room.name) {
                 // If any other user enters the same client then close this connection or redirects the user.
-                socket.disconnect();
+                socket.emit('leave', eventRoom);
             }
         });
-        socket.on('disconnect', function() {
+        socket.on('leave', function() {
             document.querySelector('.controllerOne p').innerHTML = '<p>Disconnected socket connection!!!!!!</p>';
         });
     }
     $scope.disConnectSocketInContOne = function () {
-        socket.disconnect();
+        // socket.leave();
     }
 });
 
@@ -34,14 +34,14 @@ app.controller('DemoCtrlTwo', function($scope, socketFactory){
             console.log("Data from server....", eventRoom, socketFactory.room.name);
             if (eventRoom.name === socketFactory.room.name) {
                 // If any other user enters the same client then close this connection or redirects the user.
-                socket.disconnect();
+                socket.emit('leave', eventRoom);
             }
         });
-        socket.on('disconnect', function() {
+        socket.on('leave', function() {
             document.querySelector('.controllerTwo p').innerHTML = '<p>Disconnected socket connection!!!!!!</p>';
         });
     }
     $scope.disConnectSocketInConTwo = function () {
-        socket.disconnect();
+        // socket.leave();
     }
 });
