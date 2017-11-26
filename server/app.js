@@ -1,5 +1,10 @@
-var server = require('http').createServer();
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+server.listen(3000);
 var io = require('socket.io')(server);
+
+
 
 io.on('connection', function(client){
     console.log('connection');
@@ -13,5 +18,13 @@ io.on('connection', function(client){
     });
 });
 
+// app.get('/test', function(req, res, next) {
+//     res.send('respond with a resource.');
+//   });
 
-server.listen(3000);
+app.get('/', function(req, res, next) {
+    res.send('respond with a resource.');
+  });
+
+
+
