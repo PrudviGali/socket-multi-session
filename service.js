@@ -14,7 +14,12 @@ app.service('socketFactory', function() {
     var makeSocketConnection = function() {
         // Create socket connection only if there is no socket connected already.
         if(!socket) {
-            socket = io('http://localhost:3000');
+            socket = io('http://localhost:3000', {
+                'reconnection': true,
+                'reconnectionDelay':1000,
+                'reconnectionDelayMax': 5000,
+                'reconnectionAttempts': 5
+            });
             socket.on('connect', function () {
                 socket.emit('create', room);
             });
